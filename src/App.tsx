@@ -5,12 +5,15 @@ import LoginPage from './pages/login/LoginPage';
 
 export default function App() {
   return (
+    <div className='bg-primary min-h-screen'>
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
       </Routes>
     </Router>
+    </div>
+
   );
 };
 

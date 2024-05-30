@@ -22,12 +22,14 @@ export default function InputText(props: InputTextProps) {
   };
 
   function handleInputKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (!editedText) return;
     if (e.key === 'Enter') {
       if (props.onSave) props.onSave(editedText);
       setIsEditing(false);
     }
 
     if (e.key === 'Escape') {
+      setEditedText(props.text)
       setIsEditing(false);
     }
   };
@@ -40,13 +42,12 @@ export default function InputText(props: InputTextProps) {
           type="text"
           value={editedText}
           onChange={handleInputChange}
-          onBlur={() => setIsEditing(false)}
           onKeyDown={handleInputKeyDown}
           autoFocus
           size={editedText.length}
         />
       ) : (
-        <span className='leading-7 overflow-hidden text-ellipsis block whitespace-nowrap' onClick={handleClick} title={props.text}>{props.text}</span>
+        <span className='leading-7 overflow-hidden text-ellipsis block whitespace-nowrap' onClick={handleClick} title={editedText}>{editedText}</span>
       )}
     </div>
   )

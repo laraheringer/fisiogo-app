@@ -11,6 +11,7 @@ export default function UsersPage() {
   const {getUsers, createUser, updateUser, deleteUser} = useUserService()
   const [users, setUsers] = useState<Array<User>>([]);
   const [hoverLine, setHoverLine] = useState<string>(null);
+  const [newUser, setNewUser] = useState<User>(null);
 
   useEffect(() => {
     getUsers().then((userData: AxiosResponse<User[]>) => {
@@ -47,7 +48,27 @@ export default function UsersPage() {
     } catch (error) {
       console.log(error)
     }
+  }
 
+  async function handleSaveUser(): Promise<void> {
+    try {
+      const password: string = '1234';
+      const { data } = await createUser( { ...newUser, password });
+      setUsers([ ...users, data]);
+      setNewUser(null);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  function handleAddNewUser(): void {
+    newUser ? setNewUser(null) : 
+      setNewUser({
+        _id: '',
+        name: '',
+        username: '',
+        type: UserConstants.USER_TYPES.ADMIN
+      });
   }
 
   return (
@@ -57,7 +78,7 @@ export default function UsersPage() {
           <Link to="/home" title='Voltar'><FontAwesomeIcon className='text-white text-2xl font-bold' icon={faArrowLeft}/></Link>
           <h1 className='text-white text-2xl font-bold'>Usuários</h1>
         </section>
-        <button className='text-white bg-secondary h-8 px-2 rounded hover:shadow-[inset_0_0_0_20rem_#01172910]'>Novo Usuário</button>
+        <button onClick={handleAddNewUser} className='text-white bg-secondary h-8 px-2 rounded hover:shadow-[inset_0_0_0_20rem_#01172910]'>{ newUser ? 'Cancelar' : 'Novo Usuário'}</button>
       </header>
       <table className='w-full bg-gray-200 mt-4 rounded-2xl'>
         <thead>
@@ -77,14 +98,31 @@ export default function UsersPage() {
                   <td className='px-3 py-1 relative'>
                     <span className='text-gray-800'>{UserConstants.USER_TYPES_TRANSLATIONS[user.type?.toUpperCase()]}</span>
                     {
-                      hoverLine == user._id ? (
+                      hoverLine == user._id && (
                         <button onClick={() => handleDeleteUser(user._id)} className='absolute right-4 rounded-full hover:bg-gray-300 w-6 h-6'><FontAwesomeIcon icon={faTrash} className='text-gray-800 text-sm'></FontAwesomeIcon></button>
-                      ) : false
+                      )
+                    }
+                    {
+                      !user._id && (
+                        <button disabled={!user.name || !user.type || !user.username} className='text-white absolute right-4 rounded-md bg-secondary w-7 h-6 text-sm disabled:bg-gray-500'>OK</button>
+                      )
                     }
                   </td>
                 </tr>
               )
             })
+          }
+          {
+            newUser && (
+              <tr>
+                <td className='px-3 py-1 text-gray-800'><InputText initialStateEditing={true} text={newUser.name} onSave={(name: string) => setNewUser({ ...newUser, name})}/></td>
+                  <td className='px-3 py-1 text-gray-800'><InputText initialStateEditing={true} text={newUser.username} onSave={(username: string) => setNewUser({ ...newUser, username})}/></td>
+                  <td className='px-3 py-1 relative'>
+                    <span className='text-gray-800'>{UserConstants.USER_TYPES_TRANSLATIONS[newUser.type?.toUpperCase()]}</span>
+                    <button onClick={handleSaveUser} disabled={!newUser.name || !newUser.type || !newUser.username} className='text-white absolute right-4 rounded-md bg-secondary w-7 h-6 text-sm disabled:bg-gray-500'>OK</button>
+                </td>
+              </tr>
+            )
           }
         </tbody>
       </table>

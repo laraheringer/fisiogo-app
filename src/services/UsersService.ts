@@ -15,11 +15,11 @@ export function useUserService() {
     return await apiService.get('/users');
   }
 
-  async function createUser(user: User): Promise<AxiosResponse<Array<User>>> {
+  async function createUser(user: User): Promise<AxiosResponse<User>> {
     return await apiService.post('/users', user);
   }
 
-  async function updateUser(user: User): Promise<AxiosResponse<Array<User>>> {
+  async function updateUser(user: User): Promise<AxiosResponse<User>> {
     return await apiService.put('/users', user);
   }
 

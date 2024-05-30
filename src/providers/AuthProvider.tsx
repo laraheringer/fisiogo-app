@@ -8,12 +8,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>(null);
 
 export function AuthProvider(props: any) {
-  const [token, setToken] = useState<string>(null);
-
-  useEffect(() => {
-    const token: string = localStorage.getItem('token');
-    if (token) setToken(token);
-  }, [])
+  const [token, setToken] = useState<string>(() => {
+    return localStorage.getItem('token') || null;
+  });
 
   return (
     <AuthContext.Provider value={{ token, setToken }}>

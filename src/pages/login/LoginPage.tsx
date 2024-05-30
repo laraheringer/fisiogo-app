@@ -5,19 +5,19 @@ import { useAuthService } from '../../services/AuthService';
 
 export default function LoginPage() {
   const { login } = useAuthService();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [errorMsg, setErrorMsg] = useState<string>('');
 
   const navigate = useNavigate();
-  const { setToken } = useAuth();
+  const { token, setToken } = useAuth();
 
   async function handleLogin() {
     try {
-      const token = await login(username, password);
-      setToken(token);
-      localStorage.setItem('token', token);
-      navigate('/home');
+      const response = await login(username, password);
+      setToken(response.data);
+      localStorage.setItem('token', response.data);
+      navigate('/users');
     } catch (error) {
       setErrorMsg('Não foi possível logar. Verifique seu nome de usuário e sua senha')
     }

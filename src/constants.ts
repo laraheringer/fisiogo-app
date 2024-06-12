@@ -11,3 +11,11 @@ export class UserConstants {
         ADMIN: 'Administrador'
     }
 }
+
+export class FormConstants {
+    static FIELD_TYPES = {
+        TEXT: 'Text',
+        NUMBER: 'Number',
+        LIST: 'List'
+    };
+}
